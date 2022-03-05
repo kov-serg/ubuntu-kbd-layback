@@ -4,4 +4,4 @@ Console application to switch layout to default after some idle (default is 5 se
 
 ubuntu-kbd-layback.sh - script compiles and run it
 
-use ctrl+c or pause to stop ubuntu-kbd-layback
+use ctrl+c or scroll_lock to stop ubuntu-kbd-layback
