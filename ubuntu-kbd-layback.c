@@ -106,6 +106,15 @@ leave:
 	return rc;
 }
 
+static void kbmon_showkey(KbdMonitor *p) {
+    int i;
+    for(i=0;i<kbm_map_size;i++) {
+	if (p->map[1][i]) {
+	    printf("p->map[1][%d]&%d\n",i,p->map[1][i]&255);
+	}
+    }
+}
+
 static void kbmon_step(KbdMonitor* p) {
 	int idx;
 	memcpy(p->map[0],p->map[1],kbm_map_size);
@@ -114,7 +123,9 @@ static void kbmon_step(KbdMonitor* p) {
 	if (memcmp(p->map[0],p->map[1],kbm_map_size)!=0) {
 		p->tmr1=0; p->tmr1_en=1; 
 	}
-	if (p->map[1][15]&128) { p->quit=1; } // pause key
+	//if (p->map[1][15]&128) { p->quit=1; } // pause key
+	if (p->map[1][9]&64) { p->quit=1; } // scroll lock
+	//kbmon_showkey(p);
 	if (p->tmr1_en && p->tmr1>=p->tmr1_limit) { p->tmr1_en=0;
 		idx=p->get_layout(0);
 		if (idx) {
@@ -143,7 +154,7 @@ int main(int argc,char** argv) {
 		if (x>0 && x<=3600) km->tmr1_limit=x*10;
 		else { fprintf(stderr,"invalid value\n"); return -1; }
 	}
-	printf("start monitoring keyboard tau=%.1fs - press PAUSE to exit\n",
+	printf("start monitoring keyboard tau=%.1fs - press Scroll Lock to exit\n",
 		km->tmr1_limit*0.1);
 	set_echo(0);
 	while(!km->quit) {
